@@ -1,0 +1,51 @@
+vim.o.sessionoptions = 'blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions'
+
+return {
+  {
+    'rmagatti/auto-session',
+    config = function()
+      require('auto-session').setup {
+        auto_restore = true,
+        auto_restore_last_session = false,
+        auto_save = true,
+        log_level = 4,
+        suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
+        use_git_branch_name = false,
+
+        -- ⚠️ This will only work if Telescope.nvim is installed
+        -- The following are already the default values, no need to provide them if these are already the settings you want.
+        session_lens = {
+          -- If load_on_setup is false, make sure you use `:SessionSearch` to open the picker as it will initialize everything first
+          load_on_setup = true,
+          mappings = {
+            -- Mode can be a string or a table, e.g. {"i", "n"} for both insert and normal mode
+            alternate_session = { 'i', '<C-S>' },
+            delete_session = { 'i', '<C-D>' },
+          },
+          previewer = false,
+          theme_conf = {
+            border = true,
+          },
+        },
+      }
+
+      -- Set mapping for searching a session.
+      vim.keymap.set('n', '<leader>as', require('auto-session.session-lens').search_session, {
+        noremap = true,
+        desc = '[A]utoSession List [S]ession',
+      })
+      vim.keymap.set('n', '<leader>ac', '<cmd>SessionSave<CR>', {
+        noremap = true,
+        desc = '[A]utoSession [C]reate',
+      })
+      vim.keymap.set('n', '<leader>ar', '<cmd>SessionRestore<CR>', {
+        noremap = true,
+        desc = '[A]utoSession [R]estore',
+      })
+      vim.keymap.set('n', '<leader>ad', '<cmd>SessionDelete<CR>', {
+        noremap = true,
+        desc = '[A]utoSession [D]elete',
+      })
+    end,
+  },
+}

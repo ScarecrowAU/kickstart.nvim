@@ -1,0 +1,51 @@
+return {
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    branch = 'main',
+    dependencies = {
+      { 'github/copilot.vim' },
+      { 'nvim-lua/plenary.nvim' },
+    },
+    build = 'make tiktoken', -- Mac and Linux only
+    opts = {
+      debug = true,
+      window = {
+        layout = 'float', -- Customize the layout
+        width = 80, -- Set the width of the floating window
+        height = 20, -- Set the height of the floating window
+      },
+      logging = {
+        enabled = true, -- Enable logging
+        level = 'info', -- Set the logging level
+      },
+    },
+    config = function()
+      local chat = require 'CopilotChat'
+      chat.setup {
+        window = {
+          layout = 'float',
+          width = 120,
+          height = 40,
+        },
+        logging = {
+          enabled = true,
+          level = 'info',
+        },
+      }
+
+      vim.keymap.set('n', '<leader>gc', function()
+        chat.toggle {
+          window = {
+            layout = 'float',
+          },
+        }
+      end, { desc = '[G]itHub Copilot [C]hat' })
+      vim.keymap.set('n', '<leader>ge', '<cmd>CopilotChatExplain<CR>', { desc = '[G]itHub Copilot [E]xplain' })
+      vim.keymap.set('n', '<leader>go', '<cmd>CopilotChatOptimize<CR>', { desc = '[G]itHub Copilot [O]ptimise' })
+      vim.keymap.set('n', '<leader>gt', '<cmd>CopilotChatTests<CR>', { desc = '[G]itHub Copilot [T]ests' })
+      vim.keymap.set('n', '<leader>gr', '<cmd>CopilotChatReview<CR>', { desc = '[G]itHub Copilot [R]eview' })
+      vim.keymap.set('n', '<leader>gs', '<cmd>CopilotChatSummarize<CR>', { desc = '[G]itHub Copilot [S]ummarise' })
+      vim.keymap.set('n', '<leader>gf', '<cmd>CopilotChatFixDiagnostic<CR>', { desc = '[G]itHub Copilot [F]ix Diagnostics' })
+    end,
+  },
+}
