@@ -114,6 +114,12 @@ vim.keymap.set('n', '<leader>fp', '<cmd>CopyPathToFile<CR>', { desc = 'Copy Curr
 vim.keymap.set('n', '<F2>', vim.lsp.buf.rename, { desc = '[R]e[n]ame' })
 vim.keymap.set('n', '<leader>lr', '<cmd>LspRestart<CR>', { desc = '[L]anguage Server [R]estart' })
 
+-- Clipboard keymaps - Cmd+Shift+C/V use same clipboard as Cmd+C/V
+vim.keymap.set('v', '<D-S-c>', '"+y', { desc = 'Copy to clipboard' })
+vim.keymap.set('n', '<D-S-v>', '"+p', { desc = 'Paste from clipboard' })
+vim.keymap.set('i', '<D-S-v>', '<C-r>+', { desc = 'Paste from clipboard' })
+vim.keymap.set('v', '<D-S-v>', '"+p', { desc = 'Paste from clipboard' })
+
 -- Disable C-e/C-y scrolling since Karabiner sends these for Ctrl+Arrow keys
 vim.keymap.set('n', '<C-e>', '<Nop>', { noremap = true })
 vim.keymap.set('n', '<C-y>', '<Nop>', { noremap = true })

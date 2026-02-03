@@ -16,7 +16,7 @@ return {
     keys = {
       { '<leader>un', function() require('snacks').notifier.hide() end, desc = 'Dismiss all notifications' },
       { '<leader>bd', function() require('snacks').bufdelete() end, desc = 'Delete buffer' },
-      { '<leader>gg', function() require('snacks').lazygit() end, desc = 'Lazygit' },
+      { '<leader>lg', function() require('snacks').lazygit() end, desc = 'Lazygit' },
       { '<leader>gb', function() require('snacks').git.blame_line() end, desc = 'Git blame line' },
       { '<leader>gB', function() require('snacks').gitbrowse() end, desc = 'Git browse' },
     },
