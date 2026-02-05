@@ -4,7 +4,7 @@ return {
     lazy = false,
     dependencies = {
       'nvim-tree/nvim-web-devicons',
-      'moll/vim-bbye', -- Better buffer deletion that preserves window layout
+      'moll/vim-bbye',
     },
     opts = {
       options = {
@@ -26,13 +26,11 @@ return {
 
       local map = vim.keymap.set
 
-      -- Buffer navigation (Alt + ,/.)
       map('n', '<A-,>', '<cmd>BufferLineCyclePrev<cr>', { desc = 'Prev buffer' })
       map('n', '<A-.>', '<cmd>BufferLineCycleNext<cr>', { desc = 'Next buffer' })
       map('n', '<A-<>', '<cmd>BufferLineMovePrev<cr>', { desc = 'Move buffer left' })
       map('n', '<A->>', '<cmd>BufferLineMoveNext<cr>', { desc = 'Move buffer right' })
 
-      -- Jump to buffers (Alt + 1-9)
       map('n', '<A-1>', '<cmd>BufferLineGoToBuffer 1<cr>', { desc = 'Go to buffer 1' })
       map('n', '<A-2>', '<cmd>BufferLineGoToBuffer 2<cr>', { desc = 'Go to buffer 2' })
       map('n', '<A-3>', '<cmd>BufferLineGoToBuffer 3<cr>', { desc = 'Go to buffer 3' })
@@ -44,7 +42,6 @@ return {
       map('n', '<A-9>', '<cmd>BufferLineGoToBuffer 9<cr>', { desc = 'Go to buffer 9' })
       map('n', '<A-0>', '<cmd>BufferLineGoToLast<cr>', { desc = 'Last buffer' })
 
-      -- Buffer actions - use Bdelete instead of bdelete to preserve window layout
       map('n', '<A-p>', '<cmd>BufferLineTogglePin<cr>', { desc = 'Toggle pin' })
       map('n', '<A-c>', '<cmd>Bdelete<cr>', { desc = 'Delete buffer' })
       map('n', '<C-p>', '<cmd>BufferLinePick<cr>', { desc = 'Pick buffer' })

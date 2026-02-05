@@ -11,38 +11,45 @@ return {
     config = function(_, opts)
       require('persistence').setup(opts)
 
-      -- Auto-restore session when opening Neovim in a directory
       local function restore_session()
-        -- Only load the session if nvim was started with no arguments
         if vim.fn.argc() == 0 then
           vim.defer_fn(function()
             require('persistence').load()
 
-            -- Check if nvim-tree window exists but is empty, and reopen it
             vim.defer_fn(function()
               local current_win = vim.api.nvim_get_current_win()
-              local tree_win = nil
+              local explorer_win = nil
+              local was_in_explorer = false
 
               for _, win in ipairs(vim.api.nvim_list_wins()) do
                 local buf = vim.api.nvim_win_get_buf(win)
                 local ft = vim.bo[buf].filetype
-                if ft == 'NvimTree' then
-                  tree_win = win
-                  -- Close the empty tree window and reopen properly
+                if ft:match '^snacks' then
+                  explorer_win = win
+                  was_in_explorer = (current_win == win)
                   vim.api.nvim_win_close(win, true)
-                  vim.cmd 'NvimTreeOpen'
+                  require('snacks').explorer()
                   break
                 end
               end
 
-              -- If we reopened the tree and we weren't focused on it, restore focus
-              if tree_win and current_win ~= tree_win then vim.api.nvim_set_current_win(current_win) end
+              if explorer_win then
+                vim.defer_fn(function()
+                  for _, win in ipairs(vim.api.nvim_list_wins()) do
+                    local buf = vim.api.nvim_win_get_buf(win)
+                    local ft = vim.bo[buf].filetype
+                    if not ft:match '^snacks' then
+                      vim.api.nvim_set_current_win(win)
+                      break
+                    end
+                  end
+                end, 10)
+              end
             end, 50)
           end, 100)
         end
       end
 
-      -- Try to restore immediately if we're already past VimEnter
       if vim.v.vim_did_enter == 1 then
         restore_session()
       else

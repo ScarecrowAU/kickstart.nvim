@@ -3,10 +3,6 @@ return {
     'folke/trouble.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-
       mode = 'workspace_diagnostics',
     },
 
@@ -16,7 +12,6 @@ return {
         mode = 'workspace_diagnostics',
       }
 
-      -- Lua
       vim.keymap.set('n', '<leader>xx', function() trouble.toggle() end, { desc = 'Trouble: Toggle' })
       vim.keymap.set('n', '<leader>xw', function() trouble.toggle 'workspace_diagnostics' end, { desc = 'Trouble: Workspace Diagnostics' })
       vim.keymap.set('n', '<leader>xd', function() trouble.toggle 'document_diagnostics' end, { desc = 'Trouble: Document Diagnostics' })

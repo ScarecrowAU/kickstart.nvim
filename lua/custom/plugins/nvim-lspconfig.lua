@@ -2,20 +2,12 @@ return {
   {
     'neovim/nvim-lspconfig',
     config = function()
-      -- Get capabilities from blink.cmp
       local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       local servers = {
-        -- Python
         pyright = {},
-
-        -- JavaScript/TypeScript (backup - you have typescript-tools.nvim as primary)
         ts_ls = {},
-
-        -- JSON
         jsonls = {},
-
-        -- YAML
         yamlls = {
           settings = {
             yaml = {
@@ -28,12 +20,8 @@ return {
             },
           },
         },
-
-        -- Docker
         dockerls = {},
         docker_compose_language_service = {},
-
-        -- Rust
         rust_analyzer = {
           settings = {
             ['rust-analyzer'] = {
@@ -46,17 +34,11 @@ return {
             },
           },
         },
-
-        -- TOML
         taplo = {},
-
-        -- Bash/Shell
         bashls = {},
       }
 
-      -- Configure and enable each server
       for name, server in pairs(servers) do
-        -- Merge capabilities and set offset encoding
         local server_capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
         server_capabilities.offsetEncoding = { 'utf-16', 'utf-8' }
 
