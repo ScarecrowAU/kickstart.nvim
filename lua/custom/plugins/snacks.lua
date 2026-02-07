@@ -7,9 +7,7 @@ return {
       local explorer_keys = {
         ['<esc>'] = '',
         ['q'] = '',
-        ['<C-b>'] = function()
-          vim.cmd 'wincmd p'
-        end,
+        ['<C-b>'] = function() vim.cmd 'wincmd p' end,
         -- File modification keybinds (matching nvim-tree)
         ['a'] = 'explorer_add',
         ['d'] = 'explorer_del',
@@ -20,65 +18,61 @@ return {
         ['y'] = 'explorer_yank',
       }
 
-      local snacks = require('snacks')
-      snacks.setup({
-      bigfile = { enabled = true },
-      notifier = {
-        enabled = false,
-      },
-      quickfile = { enabled = true },
-      statuscolumn = { enabled = true },
-      words = { enabled = true },
-      animate = { enabled = true },
-      dashboard = { enabled = true },
-      dim = { enabled = true },
-      explorer = { enabled = true },
-      indent = {
-        enabled = true,
-        char = '│',
-        scope = {
+      local snacks = require 'snacks'
+      snacks.setup {
+        bigfile = { enabled = true },
+        notifier = {
+          enabled = false,
+        },
+        quickfile = { enabled = true },
+        statuscolumn = { enabled = true },
+        words = { enabled = true },
+        animate = { enabled = true },
+        dashboard = { enabled = true },
+        dim = { enabled = true },
+        explorer = { enabled = true },
+        indent = {
           enabled = true,
-          char = '┃',
-          underline = false,
-          hl = 'SnacksIndentScope',
+          char = '│',
+          scope = {
+            enabled = true,
+            char = '┃',
+            underline = false,
+            hl = 'SnacksIndentScope',
+          },
         },
-      },
-      input = { enabled = true },
-      keymap = { enabled = true },
-      rename = { enabled = true },
-      picker = {
-        enabled = true,
-        win = {
-          input = {
-            keys = {
-              ['<PageUp>'] = { 'preview_scroll_up', mode = { 'i', 'n' } },
-              ['<PageDown>'] = { 'preview_scroll_down', mode = { 'i', 'n' } },
+        input = { enabled = true },
+        keymap = { enabled = true },
+        rename = { enabled = true },
+        picker = {
+          enabled = true,
+          win = {
+            input = {
+              keys = {
+                ['<PageUp>'] = { 'preview_scroll_up', mode = { 'i', 'n' } },
+                ['<PageDown>'] = { 'preview_scroll_down', mode = { 'i', 'n' } },
+              },
+            },
+          },
+          sources = {
+            explorer = {
+              win = {
+                input = { keys = explorer_keys },
+                list = { keys = explorer_keys },
+                preview = { keys = explorer_keys },
+              },
             },
           },
         },
-        sources = {
-          explorer = {
-            win = {
-              input = { keys = explorer_keys },
-              list = { keys = explorer_keys },
-              preview = { keys = explorer_keys },
-            },
-          },
-        },
-      },
-      scratch = { enabled = true },
-      scroll = { enabled = true },
-      terminal = { enabled = true },
-      zen = { enabled = true },
-      })
+        scratch = { enabled = true },
+        scroll = { enabled = true },
+        terminal = { enabled = true },
+        zen = { enabled = true },
+      }
 
       -- Set up diagnostic keybindings after Snacks is loaded
-      local function go_to_next_error()
-        vim.diagnostic.jump { count = 1, float = true }
-      end
-      local function go_to_prev_error()
-        vim.diagnostic.jump { count = -1, float = true }
-      end
+      local function go_to_next_error() vim.diagnostic.jump { count = 1, float = true } end
+      local function go_to_prev_error() vim.diagnostic.jump { count = -1, float = true } end
 
       require('snacks').keymap.set('n', '<leader>dr', vim.diagnostic.reset, { desc = '[D]iagnostic [R]eset' })
       require('snacks').keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
@@ -99,9 +93,7 @@ return {
         desc = '[R]e[n]ame',
       })
 
-      local function setup_indent_colors()
-        vim.api.nvim_set_hl(0, 'SnacksIndentScope', { fg = '#00D7FF', bold = true })
-      end
+      local function setup_indent_colors() vim.api.nvim_set_hl(0, 'SnacksIndentScope', { fg = '#00D7FF', bold = true }) end
 
       setup_indent_colors()
       vim.api.nvim_create_autocmd('ColorScheme', {
@@ -137,7 +129,7 @@ return {
       { '<leader>Z', function() require('snacks').zen.zoom() end, desc = 'Zoom window' },
       { '<leader>h', function() require('snacks').dashboard() end, desc = 'Dashboard' },
       { '<leader>ff', function() Snacks.picker.files() end, desc = 'Find Files' },
-      { '<leader>fa', function() Snacks.picker.files({ hidden = true, no_ignore = true }) end, desc = '[F]ind [A]ll Files' },
+      { '<leader>fa', function() Snacks.picker.files { hidden = true, no_ignore = true } end, desc = '[F]ind [A]ll Files' },
       { '<leader>fg', function() Snacks.picker.grep() end, desc = '[F]ind [G]rep' },
       { '<leader>sw', function() Snacks.picker.grep_word() end, desc = '[S]earch current [W]ord' },
       { '<leader>f/', function() Snacks.picker.grep_buffers() end, desc = '[F]ind [/] in Open Files' },
@@ -150,7 +142,7 @@ return {
       { '<leader>sd', function() Snacks.picker.diagnostics() end, desc = '[S]earch [D]iagnostics' },
       { '<leader>sr', function() Snacks.picker.resume() end, desc = '[S]earch [R]esume' },
       { '<leader>/', function() Snacks.picker.lines() end, desc = '[/] Fuzzily search in current buffer' },
-      { '<leader>sn', function() Snacks.picker.files({ cwd = vim.fn.stdpath('config') }) end, desc = '[S]earch [N]eovim files' },
+      { '<leader>sn', function() Snacks.picker.files { cwd = vim.fn.stdpath 'config' } end, desc = '[S]earch [N]eovim files' },
       { 'gd', function() Snacks.picker.lsp_definitions() end, desc = '[G]oto [D]efinition' },
       { 'gr', function() Snacks.picker.lsp_references() end, desc = '[G]oto [R]eferences' },
       { 'gi', function() Snacks.picker.lsp_implementations() end, desc = '[G]oto [I]mplementations' },
@@ -203,9 +195,12 @@ return {
             if ft == 'snacks_explorer' or bufname:match 'snacks://explorer' then
               vim.defer_fn(function()
                 if vim.api.nvim_buf_is_valid(event.buf) then
-                  vim.keymap.set('n', '<C-b>', function()
-                    vim.cmd 'wincmd p'
-                  end, { buffer = event.buf, noremap = true, nowait = true, silent = true, desc = 'Go back to code' })
+                  vim.keymap.set(
+                    'n',
+                    '<C-b>',
+                    function() vim.cmd 'wincmd p' end,
+                    { buffer = event.buf, noremap = true, nowait = true, silent = true, desc = 'Go back to code' }
+                  )
 
                   vim.keymap.set('n', '<Esc>', function() end, { buffer = event.buf, noremap = true, nowait = true, silent = true })
                   vim.keymap.set('n', 'q', function() end, { buffer = event.buf, noremap = true, nowait = true, silent = true })

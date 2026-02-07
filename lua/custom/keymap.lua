@@ -1,13 +1,27 @@
 -- Window management (navigation via smart-splits.lua)
 -- Smart window cycling that skips special buffers
-local function smart_window_cycle()
-  local current_win = vim.api.nvim_get_current_win()
-  vim.cmd 'wincmd w'
-  local new_win = vim.api.nvim_get_current_win()
-  local filetype = vim.bo.filetype
+local function is_special_win(win)
+  local buf = vim.api.nvim_win_get_buf(win)
+  local ft = vim.bo[buf].filetype
+  local bufname = vim.api.nvim_buf_get_name(buf)
+  local skip_filetypes = { 'NvimTree', 'neo-tree', 'undotree', 'diff' }
+  return vim.tbl_contains(skip_filetypes, ft) or ft:match '^snacks' or bufname:match 'snacks://'
+end
 
-  local skip_filetypes = { 'NvimTree', 'neo-tree', 'undotree', 'diff', 'snacks_explorer', 'snacks_win' }
-  if vim.tbl_contains(skip_filetypes, filetype) and current_win ~= new_win then vim.cmd 'wincmd w' end
+local function smart_window_cycle()
+  local start_win = vim.api.nvim_get_current_win()
+  local visited = { [start_win] = true }
+
+  vim.cmd 'wincmd w'
+  local win = vim.api.nvim_get_current_win()
+
+  while is_special_win(win) and not visited[win] do
+    visited[win] = true
+    vim.cmd 'wincmd w'
+    win = vim.api.nvim_get_current_win()
+  end
+
+  if is_special_win(win) then vim.api.nvim_set_current_win(start_win) end
 end
 
 vim.keymap.set('n', '<C-w>w', smart_window_cycle, { desc = 'Cycle windows (skip special buffers)' })
