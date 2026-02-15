@@ -56,6 +56,9 @@ return {
           },
           sources = {
             explorer = {
+              hidden = true,
+              ignored = true,
+              exclude = { 'node_modules' },
               win = {
                 input = { keys = explorer_keys },
                 list = { keys = explorer_keys },
