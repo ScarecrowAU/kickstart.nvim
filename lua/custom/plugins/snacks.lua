@@ -58,7 +58,7 @@ return {
             explorer = {
               hidden = true,
               ignored = true,
-              exclude = { 'node_modules' },
+              exclude = { 'node_modules', '.DS_Store' },
               win = {
                 input = { keys = explorer_keys },
                 list = { keys = explorer_keys },

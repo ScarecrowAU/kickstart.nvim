@@ -6,7 +6,7 @@ return {
 
       local servers = {
         pyright = {},
-        ts_ls = {},
+        -- ts_ls = {},
         jsonls = {},
         yamlls = {
           settings = {
