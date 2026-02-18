@@ -5,7 +5,7 @@ local function is_special_win(win)
   local ft = vim.bo[buf].filetype
   local bufname = vim.api.nvim_buf_get_name(buf)
   local skip_filetypes = { 'NvimTree', 'neo-tree', 'undotree', 'diff' }
-  return vim.tbl_contains(skip_filetypes, ft) or ft:match '^snacks' or bufname:match 'snacks://'
+  return vim.tbl_contains(skip_filetypes, ft)
 end
 
 local function smart_window_cycle()

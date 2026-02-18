@@ -4,20 +4,6 @@ return {
     priority = 1000,
     lazy = false,
     config = function()
-      local explorer_keys = {
-        ['<esc>'] = '',
-        ['q'] = '',
-        ['<C-b>'] = function() vim.cmd 'wincmd p' end,
-        -- File modification keybinds (matching nvim-tree)
-        ['a'] = 'explorer_add',
-        ['d'] = 'explorer_del',
-        ['r'] = 'explorer_rename',
-        ['c'] = 'explorer_copy',
-        ['x'] = 'explorer_move',
-        ['p'] = 'explorer_paste',
-        ['y'] = 'explorer_yank',
-      }
-
       local snacks = require 'snacks'
       snacks.setup {
         bigfile = { enabled = true },
@@ -28,9 +14,8 @@ return {
         statuscolumn = { enabled = true },
         words = { enabled = true },
         animate = { enabled = true },
-        dashboard = { enabled = true },
+        dashboard = { enabled = true, autoshow = false },
         dim = { enabled = true },
-        explorer = { enabled = true },
         indent = {
           enabled = true,
           char = '│',
@@ -51,18 +36,6 @@ return {
               keys = {
                 ['<PageUp>'] = { 'preview_scroll_up', mode = { 'i', 'n' } },
                 ['<PageDown>'] = { 'preview_scroll_down', mode = { 'i', 'n' } },
-              },
-            },
-          },
-          sources = {
-            explorer = {
-              hidden = true,
-              ignored = true,
-              exclude = { 'node_modules', '.DS_Store' },
-              win = {
-                input = { keys = explorer_keys },
-                list = { keys = explorer_keys },
-                preview = { keys = explorer_keys },
               },
             },
           },
@@ -149,70 +122,6 @@ return {
       { 'gd', function() Snacks.picker.lsp_definitions() end, desc = '[G]oto [D]efinition' },
       { 'gr', function() Snacks.picker.lsp_references() end, desc = '[G]oto [R]eferences' },
       { 'gi', function() Snacks.picker.lsp_implementations() end, desc = '[G]oto [I]mplementations' },
-      {
-        '<C-b>',
-        function()
-          local current_buf = vim.api.nvim_get_current_buf()
-          local current_ft = vim.bo[current_buf].filetype
-
-          local explorer_win = nil
-          for _, win in ipairs(vim.api.nvim_list_wins()) do
-            local buf = vim.api.nvim_win_get_buf(win)
-            local ft = vim.bo[buf].filetype
-            if ft:match '^snacks' then
-              explorer_win = win
-              break
-            end
-          end
-
-          if current_ft:match '^snacks' then
-            vim.cmd 'wincmd p'
-          elseif explorer_win then
-            vim.api.nvim_set_current_win(explorer_win)
-          else
-            require('snacks').explorer()
-          end
-        end,
-        desc = 'Toggle explorer',
-      },
-      {
-        '<leader>kb',
-        function()
-          for _, win in ipairs(vim.api.nvim_list_wins()) do
-            local buf = vim.api.nvim_win_get_buf(win)
-            local ft = vim.bo[buf].filetype
-            if ft:match '^snacks' then
-              vim.api.nvim_win_close(win, false)
-              return
-            end
-          end
-          require('snacks').explorer()
-        end,
-        desc = 'Toggle explorer',
-      },
-      init = function()
-        vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter', 'FileType' }, {
-          callback = function(event)
-            local ft = vim.bo[event.buf].filetype
-            local bufname = vim.api.nvim_buf_get_name(event.buf)
-            if ft == 'snacks_explorer' or bufname:match 'snacks://explorer' then
-              vim.defer_fn(function()
-                if vim.api.nvim_buf_is_valid(event.buf) then
-                  vim.keymap.set(
-                    'n',
-                    '<C-b>',
-                    function() vim.cmd 'wincmd p' end,
-                    { buffer = event.buf, noremap = true, nowait = true, silent = true, desc = 'Go back to code' }
-                  )
-
-                  vim.keymap.set('n', '<Esc>', function() end, { buffer = event.buf, noremap = true, nowait = true, silent = true })
-                  vim.keymap.set('n', 'q', function() end, { buffer = event.buf, noremap = true, nowait = true, silent = true })
-                end
-              end, 500)
-            end
-          end,
-        })
-      end,
     },
   },
 }

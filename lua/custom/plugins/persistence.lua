@@ -13,40 +13,32 @@ return {
 
       local function restore_session()
         if vim.fn.argc() == 0 then
-          vim.defer_fn(function()
-            require('persistence').load()
+          vim.schedule(function()
+            pcall(require('persistence').load)
 
-            vim.defer_fn(function()
-              local current_win = vim.api.nvim_get_current_win()
-              local explorer_win = nil
-              local was_in_explorer = false
-
+            vim.schedule(function()
               for _, win in ipairs(vim.api.nvim_list_wins()) do
                 local buf = vim.api.nvim_win_get_buf(win)
-                local ft = vim.bo[buf].filetype
-                if ft:match '^snacks' then
-                  explorer_win = win
-                  was_in_explorer = (current_win == win)
-                  vim.api.nvim_win_close(win, true)
-                  require('snacks').explorer()
+                if vim.bo[buf].filetype == 'NvimTree' then
+                  if #vim.api.nvim_list_wins() > 1 then
+                    vim.api.nvim_win_close(win, true)
+                  end
                   break
                 end
               end
 
-              if explorer_win then
-                vim.defer_fn(function()
-                  for _, win in ipairs(vim.api.nvim_list_wins()) do
-                    local buf = vim.api.nvim_win_get_buf(win)
-                    local ft = vim.bo[buf].filetype
-                    if not ft:match '^snacks' then
-                      vim.api.nvim_set_current_win(win)
-                      break
-                    end
-                  end
-                end, 10)
+              require('nvim-tree.api').tree.open()
+
+              -- Focus an editor window
+              for _, win in ipairs(vim.api.nvim_list_wins()) do
+                local buf = vim.api.nvim_win_get_buf(win)
+                if vim.bo[buf].filetype ~= 'NvimTree' then
+                  vim.api.nvim_set_current_win(win)
+                  break
+                end
               end
-            end, 50)
-          end, 100)
+            end)
+          end)
         end
       end
 
